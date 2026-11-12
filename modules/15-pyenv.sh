@@ -5,6 +5,11 @@ BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 source "$BASE_DIR/config.conf"
 source "$BASE_DIR/lib/common.sh"
 
+if [[ "${INSTALAR_PYTHON_COM_PYENV:-false}" != true ]]; then
+    mark_skipped "Instalação do pyenv/Python desabilitada (INSTALAR_PYTHON_COM_PYENV=false)."
+    exit 0
+fi
+
 info "Instalando dependências do pyenv"
 ensure_user_exists "$USUARIO"
 

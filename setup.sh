@@ -9,6 +9,27 @@ source "$BASE_DIR/lib/logging.sh"
 
 check_root
 
+# Detectar usuário responsável pela execução
+if [[ -z "${USUARIO:-}" ]]; then
+    USUARIO="${SUDO_USER:-}"
+
+    if [[ -z "$USUARIO" || "$USUARIO" == "root" ]]; then
+        error "Não foi possível identificar o usuário de destino."
+        error "Execute utilizando: sudo ./setup.sh"
+        exit 1
+    fi
+fi
+
+# Validar usuário
+ensure_user_exists "$USUARIO"
+
+# Detectar hostname caso não tenha sido definido
+if [[ -z "${HOSTNAME_NOVO:-}" ]]; then
+    HOSTNAME_NOVO="$(hostname)"
+fi
+
+export USUARIO HOSTNAME_NOVO
+
 RUN_ID="$(date +%Y%m%d-%H%M%S)"
 LOG_DIR="$BASE_DIR/logs"
 STATUS_DIR="$LOG_DIR/.status-$RUN_ID"

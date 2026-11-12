@@ -1,0 +1,28 @@
+# Logs de execução
+logs/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.swp
+*~
+
+# Arquivos de backup
+*.bak
+*.old
+*.backup
+
+# Configurações locais e segredos
+.env
+.env.*
+!.env.example
+
+# Cache Python
+__pycache__/
+*.py[cod]
+
+# Cache e arquivos temporários
+.cache/
+*.bak.*
+*.log
+.DS_Store

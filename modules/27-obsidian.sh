@@ -45,14 +45,21 @@ GITHUB_REPOSITORY="obsidianmd/obsidian-releases"
 
 GITHUB_RELEASES_API="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases?per_page=30"
 
-DOWNLOAD_DIR="/tmp/obsidian-install"
+DOWNLOAD_DIR=""
+
+cleanup() {
+    if [[ -n "${DOWNLOAD_DIR:-}" && -d "$DOWNLOAD_DIR" ]]; then
+        rm -rf -- "$DOWNLOAD_DIR"
+    fi
+}
+trap cleanup EXIT
 
 
 # ============================================================
 # 4. Usuário e Vault
 # ============================================================
 
-OBSIDIAN_USER="${USUARIO:-operador}"
+OBSIDIAN_USER="${USUARIO:-${SUDO_USER:-}}"
 
 if ! id "$OBSIDIAN_USER" >/dev/null 2>&1; then
 
@@ -60,8 +67,8 @@ if ! id "$OBSIDIAN_USER" >/dev/null 2>&1; then
     error "$OBSIDIAN_USER"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Usuário não encontrado"
 
     exit 1
@@ -118,8 +125,8 @@ if [[ "${INSTALAR_OBSIDIAN:-true}" != "true" ]]; then
     warn "INSTALAR_OBSIDIAN=false"
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "Desabilitado no config.conf"
 
     exit 0
@@ -141,8 +148,8 @@ if [[ "$EUID" -ne 0 ]]; then
     echo
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Execução sem root"
 
     exit 1
@@ -165,8 +172,8 @@ if [[ "$ARCH" != "amd64" ]]; then
     error "$ARCH"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Arquitetura não suportada: ${ARCH}"
 
     exit 1
@@ -240,8 +247,8 @@ if [[ -z "$RELEASES_JSON" ]]; then
     error "Resposta vazia da API do GitHub."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "API GitHub sem resposta"
 
     exit 1
@@ -290,8 +297,8 @@ if [[ -z "$RELEASE_DATA" ||
     error "Nenhuma release com .deb amd64 encontrada."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Release desktop não encontrada"
 
     exit 1
@@ -341,8 +348,7 @@ fi
 
 if [[ "$SKIP_INSTALL" != true ]]; then
 
-    rm -rf "$DOWNLOAD_DIR"
-    mkdir -p "$DOWNLOAD_DIR"
+    DOWNLOAD_DIR="$(mktemp -d /tmp/obsidian-install.XXXXXX)"
 
     OBSIDIAN_DEB="${DOWNLOAD_DIR}/${DEB_NAME}"
 
@@ -897,15 +903,15 @@ echo
 if [[ "${INSTALAR_OBSIDIAN_EXCALIDRAW:-true}" == "true" ]]; then
 
     record_component_status \
-        "$COMPONENT_NAME" \
         "OK" \
+        "$COMPONENT_NAME" \
         "Obsidian ${INSTALLED_VERSION} + Excalidraw"
 
 else
 
     record_component_status \
-        "$COMPONENT_NAME" \
         "OK" \
+        "$COMPONENT_NAME" \
         "Obsidian ${INSTALLED_VERSION}"
 
 fi

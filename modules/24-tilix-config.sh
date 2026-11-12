@@ -91,8 +91,8 @@ if ! command -v tilix >/dev/null 2>&1; then
     warn "Tilix não está instalado."
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "Tilix não instalado"
 
     exit 0
@@ -112,8 +112,8 @@ if ! gnome_detect_user; then
     error "Não foi possível identificar o usuário GNOME."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Usuário GNOME não identificado"
 
     exit 1
@@ -143,8 +143,8 @@ if ! gnome_session_available; then
     warn "ser aplicadas neste momento."
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "Sessão GNOME não disponível"
 
     exit 0
@@ -353,8 +353,8 @@ if ! gnome_schema_exists "$TILIX_PROFILES_SCHEMA"; then
     error "$TILIX_PROFILES_SCHEMA"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Schema ProfilesList não encontrado"
 
     exit 1
@@ -382,8 +382,8 @@ if [[ -z "$PROFILE_UUID" ]]; then
     error "Não foi possível determinar o perfil padrão."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Perfil padrão não encontrado"
 
     exit 1
@@ -422,8 +422,8 @@ if ! gnome_gsettings \
     error "$PROFILE_SCHEMA"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Perfil Tilix inacessível"
 
     exit 1
@@ -715,15 +715,15 @@ fi
 if [[ "$VTE_CONFIGURED" == true ]]; then
 
     record_component_status \
-        "$COMPONENT_NAME" \
         "OK" \
+        "$COMPONENT_NAME" \
         "Dracula + transparência ${FINAL_TRANSPARENCY}% + VTE"
 
 else
 
     record_component_status \
-        "$COMPONENT_NAME" \
         "OK" \
+        "$COMPONENT_NAME" \
         "Dracula + transparência ${FINAL_TRANSPARENCY}%"
 
 fi

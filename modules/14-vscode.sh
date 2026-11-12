@@ -13,10 +13,16 @@ if command_exists code; then
     record_component_status "JA_EXISTIA" "Visual Studio Code" "Executável code encontrado"
 else
     wget -O /tmp/vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-    if dpkg -i /tmp/vscode.deb || apt --fix-broken install -y; then
-        record_component_status "INSTALADO" "Visual Studio Code" "Instalação concluída"
+    if ! dpkg -i /tmp/vscode.deb; then
+        if ! apt --fix-broken install -y; then
+            record_component_status "FALHA" "Visual Studio Code" "dpkg/apt retornou erro"
+            exit 1
+        fi
+    fi
+    if command_exists code; then
+        record_component_status "INSTALADO" "Visual Studio Code" "Instalação validada"
     else
-        record_component_status "FALHA" "Visual Studio Code" "dpkg/apt retornou erro"
+        record_component_status "FALHA" "Visual Studio Code" "Executável não encontrado após instalação"
         exit 1
     fi
 fi
@@ -30,5 +36,5 @@ print("*********** O Python foi instalado com sucesso! ***********")
 print("***********************************************************")
 EOF_MAINPY
 
-chown -R "$USUARIO:$USUARIO" "/home/$USUARIO/Documentos/Code"
+chown "$USUARIO:$(id -gn "$USUARIO")" "/home/$USUARIO/Documentos/Code" "/home/$USUARIO/Documentos/Code/main.py"
 info "VSCode configurado. Algumas preferências visuais ainda podem ser ajustadas pela interface."

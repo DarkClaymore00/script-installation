@@ -37,6 +37,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
+source "${ROOT_DIR}/config.conf"
+
 
 # ============================================================
 # 2. Bibliotecas
@@ -44,6 +46,11 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 source "${ROOT_DIR}/lib/common.sh"
 source "${ROOT_DIR}/lib/logging.sh"
+
+if [[ "${INSTALAR_GUEST_ADDITIONS:-false}" != true ]]; then
+    mark_skipped "VirtualBox Guest Additions desabilitado (INSTALAR_GUEST_ADDITIONS=false)."
+    exit 0
+fi
 
 
 # ============================================================
@@ -81,8 +88,8 @@ if [[ "$EUID" -ne 0 ]]; then
     echo
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Execução sem privilégios de root"
 
     exit 1
@@ -132,8 +139,8 @@ else
         warn "O módulo Guest Additions será ignorado."
 
         record_component_status \
+            "IGNORADO" \
             "$COMPONENT_NAME" \
-            "SKIPPED" \
             "VirtualBox não detectado"
 
         exit 0
@@ -187,8 +194,8 @@ else
     error "$CURRENT_KERNEL"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Headers do kernel não encontrados"
 
     exit 1
@@ -333,8 +340,8 @@ if [[ -z "$VBOX_INSTALLER" ||
     echo
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Mídia Guest Additions não encontrada"
 
     exit 1
@@ -468,8 +475,8 @@ case "$VBOX_EXIT_CODE" in
 
 
         record_component_status \
+            "FALHA" \
             "$COMPONENT_NAME" \
-            "FAIL" \
             "VBoxLinuxAdditions.run retornou ${VBOX_EXIT_CODE}"
 
         # ----------------------------------------------------
@@ -686,7 +693,7 @@ fi
 # 19. Verificar diretório de instalação
 # ============================================================
 
-if [[ -d /opt/VBoxGuestAdditions-* ]]; then
+if find /opt -maxdepth 1 -type d -name 'VBoxGuestAdditions-*' -print -quit | grep -q .; then
 
     info "Diretório Guest Additions localizado:"
 
@@ -752,8 +759,8 @@ if [[ "$REBOOT_REQUIRED" == true ]]; then
 
 
     record_component_status \
-        "$COMPONENT_NAME" \
         "OK" \
+        "$COMPONENT_NAME" \
         "Instalado; reinicialização necessária"
 
 else
@@ -761,8 +768,8 @@ else
     success "Guest Additions instalado e validado."
 
     record_component_status \
-        "$COMPONENT_NAME" \
         "OK" \
+        "$COMPONENT_NAME" \
         "Instalado e validado"
 
 fi

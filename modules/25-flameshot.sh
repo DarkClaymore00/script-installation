@@ -95,8 +95,8 @@ if [[ "${INSTALAR_FLAMESHOT:-true}" != "true" ]]; then
     warn "INSTALAR_FLAMESHOT=false"
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "Desabilitado no config.conf"
 
     exit 0
@@ -113,8 +113,8 @@ if [[ "$EUID" -ne 0 ]]; then
     error "Este módulo deve ser executado como root."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Execução sem root"
 
     exit 1
@@ -170,8 +170,8 @@ for command_name in \
         error "$command_name"
 
         record_component_status \
+            "FALHA" \
             "$COMPONENT_NAME" \
-            "FAIL" \
             "Dependência ausente: ${command_name}"
 
         exit 1
@@ -190,8 +190,8 @@ if ! gnome_detect_user; then
     error "Não foi possível identificar o usuário GNOME."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Usuário GNOME não identificado"
 
     exit 1
@@ -218,8 +218,8 @@ if ! gnome_session_available; then
     warn "Sessão GNOME não disponível."
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "Instalado; sessão GNOME indisponível"
 
     exit 0
@@ -670,8 +670,8 @@ if ! gnome_schema_exists "$CUSTOM_KEYS_SCHEMA"; then
     error "$CUSTOM_KEYS_SCHEMA"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Schema media-keys ausente"
 
     exit 1
@@ -685,8 +685,8 @@ if ! gnome_schema_exists "$CUSTOM_BINDING_SCHEMA_PATH"; then
     error "$CUSTOM_BINDING_SCHEMA_PATH"
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Schema custom-keybinding ausente"
 
     exit 1
@@ -807,8 +807,8 @@ if ! printf '%s' "$FINAL_BINDINGS" |
     error "Atalho Flameshot não foi registrado corretamente."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Custom keybinding ausente"
 
     exit 1
@@ -860,8 +860,8 @@ echo
 # ============================================================
 
 record_component_status \
-    "$COMPONENT_NAME" \
     "OK" \
+    "$COMPONENT_NAME" \
     "Wrapper D-Bus + ${FLAMESHOT_SHORTCUT}"
 
 

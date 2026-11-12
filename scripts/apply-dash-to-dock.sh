@@ -13,7 +13,7 @@ echo "[INFO] Aplicando configuração do Dash to Dock..."
 # Aguardar GNOME disponibilizar o schema
 # ------------------------------------------------------------
 
-for tentativa in $(seq 1 30); do
+for _ in $(seq 1 30); do
 
     if gsettings list-schemas |
         grep -Fxq "$SCHEMA"; then

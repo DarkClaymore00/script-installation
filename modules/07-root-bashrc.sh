@@ -1,23 +1,31 @@
 #!/bin/bash
 set -euo pipefail
 
-BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$BASE_DIR/lib/common.sh"
 
 info "Configurando .bashrc do root para ls colorido"
+
+if [[ "$EUID" -ne 0 ]]; then
+    error "Este módulo precisa ser executado como root."
+    exit 1
+fi
+
 ROOT_BASHRC="/root/.bashrc"
 
 touch "$ROOT_BASHRC"
 
-if ! grep -q "LS_OPTIONS='--color=auto'" "$ROOT_BASHRC"; then
-cat >> "$ROOT_BASHRC" <<'EOF_BASHRC'
+if ! grep -qF "# CONFIGURACAO LS COLORIDO - SCRIPT INSTALLATION" "$ROOT_BASHRC"; then
+    cat >> "$ROOT_BASHRC" <<'EOF_BASHRC'
 
-# ls colorido
-export LS_OPTIONS='--color=auto'
-eval "$(dircolors)"
-alias ls='ls $LS_OPTIONS'
-alias ll='ls $LS_OPTIONS -l'
-alias la='ls $LS_OPTIONS -la'
+# CONFIGURACAO LS COLORIDO - SCRIPT INSTALLATION
+if command -v dircolors >/dev/null 2>&1; then
+    eval "$(dircolors)"
+fi
+
+alias ls='ls --color=auto'
+alias ll='ls --color=auto -l'
+alias la='ls --color=auto -la'
 EOF_BASHRC
 fi
 

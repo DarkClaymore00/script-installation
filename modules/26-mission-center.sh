@@ -58,8 +58,8 @@ if [[ "${INSTALAR_MISSION_CENTER:-true}" != "true" ]]; then
     warn "INSTALAR_MISSION_CENTER=false"
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "Desabilitado no config.conf"
 
     exit 0
@@ -81,8 +81,8 @@ if ! command -v flatpak >/dev/null 2>&1; then
     error "Flatpak não foi encontrado."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Flatpak não disponível"
 
     exit 1
@@ -165,8 +165,8 @@ if ! flatpak info \
     error "Mission Center não foi localizado após a instalação."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Flatpak não localizado após instalação"
 
     exit 1
@@ -224,8 +224,8 @@ success "Mission Center instalado com sucesso."
 # ============================================================
 
 record_component_status \
-    "$COMPONENT_NAME" \
     "OK" \
+    "$COMPONENT_NAME" \
     "Mission Center ${MISSION_CENTER_VERSION:-instalado}"
 
 

@@ -81,8 +81,8 @@ if ! command -v gnome-shell >/dev/null 2>&1; then
     warn "O Dash to Dock será ignorado."
 
     record_component_status \
+        "IGNORADO" \
         "$COMPONENT_NAME" \
-        "SKIPPED" \
         "GNOME Shell não encontrado"
 
     exit 0
@@ -120,8 +120,8 @@ if ! gnome_detect_user; then
     error "Não foi possível identificar o usuário GNOME."
 
     record_component_status \
+        "FALHA" \
         "$COMPONENT_NAME" \
-        "FAIL" \
         "Usuário GNOME não identificado"
 
     exit 1
@@ -861,8 +861,8 @@ info "o autostart será removido automaticamente."
 # ============================================================
 
 record_component_status \
-    "$COMPONENT_NAME" \
     "OK" \
+    "$COMPONENT_NAME" \
     "Configurado; reaplicação pós-login preparada"
 
 

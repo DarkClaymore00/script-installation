@@ -6,8 +6,8 @@ O projeto também automatiza configurações que antes dependiam de ajustes manu
 
 ## Como usar
 
-- Instale o Debian no VirtualBox e inicie a máquina virtual.
-- No VirtualBox, clique em `Dispositivos` e depois em `Inserir imagem de CD dos Adicionais para Convidado`.
+- Instale o Debian em uma máquina virtual ou em um computador físico.
+- Se estiver usando VirtualBox, insira a imagem de CD dos Adicionais para Convidado. Essa etapa não se aplica a computadores físicos.
 - No Debian, abra um terminal e confirme que a mídia está disponível, por exemplo:
 
 ```bash
@@ -123,10 +123,10 @@ Para o Cisco Packet Tracer, o projeto aceita um arquivo `.deb` local ou pode loc
 
 ## Execução do script
 
-Execute o instalador como `root` a partir da raiz do projeto:
+Execute o instalador com privilégios administrativos a partir da raiz do projeto:
 
 ```bash
-./setup.sh
+sudo ./setup.sh
 ```
 
 O `setup.sh` executa automaticamente todos os arquivos `modules/*.sh` em ordem alfabética/numérica. Uma falha em um módulo é registrada, mas não interrompe imediatamente a execução dos módulos seguintes, permitindo que o relatório final apresente todos os problemas encontrados.

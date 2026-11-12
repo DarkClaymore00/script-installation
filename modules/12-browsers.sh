@@ -28,11 +28,17 @@ if [ "$INSTALAR_CHROME" = true ]; then
         record_component_status "JA_EXISTIA" "Google Chrome" "Executável encontrado"
     else
         if wget -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb; then
-            if dpkg -i /tmp/google-chrome.deb || apt --fix-broken install -y; then
-                record_component_status "INSTALADO" "Google Chrome" "Instalação concluída"
+            if ! dpkg -i /tmp/google-chrome.deb; then
+                if ! apt --fix-broken install -y; then
+                    record_component_status "FALHA" "Google Chrome" "dpkg/apt retornou erro"
+                    exit 1
+                fi
+            fi
+            if command_exists google-chrome; then
+                record_component_status "INSTALADO" "Google Chrome" "Instalação validada"
             else
-                record_component_status "FALHA" "Google Chrome" "dpkg/apt retornou erro"
-                return 1 2>/dev/null || exit 1
+                record_component_status "FALHA" "Google Chrome" "Executável não encontrado após instalação"
+                exit 1
             fi
         else
             warn "Não foi possível baixar o Google Chrome. Verifique a conexão com a Internet."
@@ -81,8 +87,8 @@ EOF
     if command -v opera >/dev/null 2>&1; then
         info "Opera instalado com sucesso."
 
-        if declare -F registrar_componente >/dev/null 2>&1; then
-            registrar_componente \
+        if declare -F record_component_status >/dev/null 2>&1; then
+            record_component_status \
                 "INSTALADO" \
                 "Opera" \
                 "Instalação concluída"
@@ -90,8 +96,8 @@ EOF
     else
         error "Opera não foi localizado após a instalação."
 
-        if declare -F registrar_componente >/dev/null 2>&1; then
-            registrar_componente \
+        if declare -F record_component_status >/dev/null 2>&1; then
+            record_component_status \
                 "FALHA" \
                 "Opera" \
                 "Executável não encontrado após instalação"
@@ -104,8 +110,8 @@ else
 
     info "Instalação do Opera desabilitada."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "IGNORADO" \
             "Opera" \
             "INSTALAR_OPERA=false"
@@ -204,8 +210,8 @@ if [[ "${INSTALAR_ZEN_BROWSER:-false}" == "true" ]]; then
         fi
 
         record_component_status \
-            "Zen Browser" \
             "OK" \
+            "Zen Browser" \
             "Zen Browser ${ZEN_VERSION:-instalado}"
 
     else
@@ -213,8 +219,8 @@ if [[ "${INSTALAR_ZEN_BROWSER:-false}" == "true" ]]; then
         error "Zen Browser não foi localizado após a instalação."
 
         record_component_status \
+            "FALHA" \
             "Zen Browser" \
-            "FAIL" \
             "Flatpak não localizado"
 
         exit 1

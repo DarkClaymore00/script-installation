@@ -14,8 +14,8 @@ source "$BASE_DIR/lib/common.sh"
 if [ "${INSTALAR_GITHUB_DESKTOP:-false}" != true ]; then
     info "Instalação do GitHub Desktop desabilitada."
     
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "IGNORADO" \
             "GitHub Desktop" \
             "INSTALAR_GITHUB_DESKTOP=false"
@@ -48,8 +48,8 @@ if [ "$ARCH" != "amd64" ]; then
     error "Arquitetura suportada neste módulo: amd64."
     error "Arquitetura encontrada: $ARCH"
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Arquitetura não suportada: $ARCH"
@@ -124,8 +124,8 @@ if ! curl -fsSL "$GPG_URL" -o "$GPG_TEMP"; then
 
     error "Não foi possível baixar a chave GPG."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Falha ao baixar chave GPG"
@@ -146,8 +146,8 @@ if ! gpg --show-keys "$GPG_TEMP" >/dev/null 2>&1; then
 
     rm -f "$GPG_TEMP"
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Chave GPG inválida"
@@ -187,8 +187,8 @@ if ! gpg --show-keys "$KEYRING" >/dev/null 2>&1; then
 
     error "O keyring criado não pôde ser validado."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Keyring inválido"
@@ -226,8 +226,8 @@ if ! apt update; then
 
     error "Falha ao atualizar os repositórios APT."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Falha no apt update"
@@ -251,8 +251,8 @@ if [ -z "$CANDIDATO" ] || [ "$CANDIDATO" = "(none)" ]; then
 
     error "O pacote github-desktop não possui uma versão candidata."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Pacote não disponível no repositório"
@@ -271,8 +271,8 @@ if dpkg -s github-desktop >/dev/null 2>&1; then
 
     info "GitHub Desktop já está instalado."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "JA_EXISTIA" \
             "GitHub Desktop" \
             "Pacote já instalado"
@@ -291,8 +291,8 @@ if ! apt install -y github-desktop; then
 
     error "Falha durante a instalação do GitHub Desktop."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "apt install retornou erro"
@@ -320,8 +320,8 @@ if dpkg -s github-desktop >/dev/null 2>&1; then
     info "GitHub Desktop instalado com sucesso."
     info "Versão instalada: $VERSAO"
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "INSTALADO" \
             "GitHub Desktop" \
             "Versão $VERSAO"
@@ -331,8 +331,8 @@ else
 
     error "O pacote github-desktop não foi encontrado após a instalação."
 
-    if declare -F registrar_componente >/dev/null 2>&1; then
-        registrar_componente \
+    if declare -F record_component_status >/dev/null 2>&1; then
+        record_component_status \
             "FALHA" \
             "GitHub Desktop" \
             "Pacote não encontrado após instalação"
