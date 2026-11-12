@@ -83,24 +83,25 @@ echo
 
 
 # ============================================================
-# 7. Verificar Tilix
+# 7. Instalar e verificar Tilix
 # ============================================================
 
 if ! command -v tilix >/dev/null 2>&1; then
 
-    warn "Tilix não está instalado."
+    info "Tilix não está instalado. Iniciando instalação..."
 
-    record_component_status \
-        "IGNORADO" \
-        "$COMPONENT_NAME" \
-        "Tilix não instalado"
-
-    exit 0
+    install_package tilix
 
 fi
 
+if ! command -v tilix >/dev/null 2>&1; then
 
-success "Tilix localizado."
+    error "Tilix não está disponível após a instalação."
+    exit 1
+
+fi
+
+success "Tilix instalado e localizado."
 
 
 # ============================================================
